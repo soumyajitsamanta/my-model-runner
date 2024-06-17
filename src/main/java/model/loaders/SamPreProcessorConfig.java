@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.exc.StreamReadException;
@@ -15,10 +13,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SamPreProcessorConfig {
 
-    private static final ObjectMapper jsonMapper = new ObjectMapper();
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
     public static final SamPreProcessorConfig fromFile(final File preprocessorFile) {
         try {
-            return jsonMapper.readValue(preprocessorFile,
+            return JSON_MAPPER.readValue(preprocessorFile,
                     SamPreProcessorConfig.class);
         } catch (final StreamReadException e) {
             throw new RuntimeException("Reading config file content failed.",
@@ -30,81 +28,78 @@ public class SamPreProcessorConfig {
                     e);
         }
     }
+    public static ObjectMapper getJsonmapper() {
+        return JSON_MAPPER;
+    }
+
     /**
      *
      */
     @JsonProperty("do_convert_rgb")
-    private final boolean doConvertRgb = true;
+    private boolean doConvertRgb = true;
+
     /**
      *
      */
     @JsonProperty("do_normalize")
-    private final boolean doNormalize = true;
+    private boolean doNormalize = true;
+
     /**
      *
      */
     @JsonProperty("do_pad")
-    private final boolean doPad = true;
+    private boolean doPad = true;
     /**
      *
      */
     @JsonProperty("do_rescale")
-    private final boolean doRescale = true;
+    private boolean doRescale = true;
     /**
      *
      */
     @JsonProperty("do_resize")
-    private final boolean doResize = true;
+    private boolean doResize = true;
     /**
      *
      */
     @JsonProperty("image_mean")
-    private final float[] imageMean = { .485f, .456f, .406f };
+    private float[] imageMean = { .485f, .456f, .406f };
     /**
      *
      */
     @JsonProperty("image_std")
-    private final float[] imageStd = { 0.229f, 0.224f, 0.225f };
+    private float[] imageStd = { 0.229f, 0.224f, 0.225f };
     /**
      *
      */
     @JsonProperty("image_processor_type")
-    private final String imageProcessorType = "SamImageProcessor";
+    private String imageProcessorType = "SamImageProcessor";
     /**
      *
      */
     @JsonProperty("processor_class")
-    private final String processorClass = "SamProcessor";
+    private String processorClass = "SamProcessor";
     /**
      *
      */
     @JsonProperty("pad_size")
-    private final Map<String, Integer> padSize =
+    private Map<String, Integer> padSize =
             Map.of("height", 1024, "width", 1024);
     /**
      *
      */
     @JsonProperty("resample")
-    private final int resample = 2;
-
+    private int resample = 2;
     /**
      *
      */
     @JsonProperty("rescale_factor")
-    private final float rescaleFactor = 0.00392156862745098f;
-
+    private float rescaleFactor = 0.00392156862745098f;
     /**
      *
      */
     @JsonProperty("size")
-    private final Map<String, Integer> size = Map.of("longest_edge", 1024);
-
-    /**
-     *
-     */
-//    private Map<String, Float> imageMeanMap = mapImageMean();
-//    private Map<String, Float> imageStdMap =
-//            Map.of("r", .229f, "g", 0.224f, "b", 0.225f);
+    private Map<String, Integer> size = Map.of("longest_edge", 1024);
 
     public SamPreProcessorConfig() {
     }
@@ -132,8 +127,16 @@ public class SamPreProcessorConfig {
                 && Objects.equals(size, other.size);
     }
 
+    public float[] getImageMean() {
+        return imageMean;
+    }
+
     public String getImageProcessorType() {
         return imageProcessorType;
+    }
+
+    public float[] getImageStd() {
+        return imageStd;
     }
 
     public Map<String, Integer> getPadSize() {
@@ -150,6 +153,10 @@ public class SamPreProcessorConfig {
 
     public float getRescaleFactor() {
         return rescaleFactor;
+    }
+
+    public Map<String, Integer> getSize() {
+        return size;
     }
 
     @Override
@@ -171,7 +178,6 @@ public class SamPreProcessorConfig {
     public boolean isDoNormalize() {
         return doNormalize;
     }
-
     public boolean isDoPad() {
         return doPad;
     }
@@ -184,14 +190,56 @@ public class SamPreProcessorConfig {
         return doResize;
     }
 
-    private Map<String, Float> mapImageMean() {
-        if (imageMean == null) {
-            return null;
-        }
-        final String[] channelNames = { "r", "g", "b" };
-        return IntStream.range(0, Math.min(3, imageMean.length))
-                .mapToObj(a -> a).collect(Collectors.toMap(i -> channelNames[i],
-                        i -> imageMean[i]));
+    public void setDoConvertRgb(boolean doConvertRgb) {
+        this.doConvertRgb = doConvertRgb;
+    }
+
+    public void setDoNormalize(boolean doNormalize) {
+        this.doNormalize = doNormalize;
+    }
+
+    public void setDoPad(boolean doPad) {
+        this.doPad = doPad;
+    }
+
+    public void setDoRescale(boolean doRescale) {
+        this.doRescale = doRescale;
+    }
+
+    public void setDoResize(boolean doResize) {
+        this.doResize = doResize;
+    }
+
+    public void setImageMean(float[] imageMean) {
+        this.imageMean = imageMean;
+    }
+
+    public void setImageProcessorType(String imageProcessorType) {
+        this.imageProcessorType = imageProcessorType;
+    }
+
+    public void setImageStd(float[] imageStd) {
+        this.imageStd = imageStd;
+    }
+
+    public void setPadSize(Map<String, Integer> padSize) {
+        this.padSize = padSize;
+    }
+
+    public void setProcessorClass(String processorClass) {
+        this.processorClass = processorClass;
+    }
+
+    public void setResample(int resample) {
+        this.resample = resample;
+    }
+
+    public void setRescaleFactor(float rescaleFactor) {
+        this.rescaleFactor = rescaleFactor;
+    }
+
+    public void setSize(Map<String, Integer> size) {
+        this.size = size;
     }
 
     @Override
@@ -226,6 +274,5 @@ public class SamPreProcessorConfig {
         builder.append("]");
         return builder.toString();
     }
-
 
 }

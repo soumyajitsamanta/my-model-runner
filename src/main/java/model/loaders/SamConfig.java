@@ -1,5 +1,6 @@
 package model.loaders;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class SamConfig {
@@ -10,12 +11,25 @@ public class SamConfig {
     private String modelFile;
     private SamPreProcessorConfig preProcessorConfig;
     private SamPostProcessorConfig postProcessorConfig;
+    private ImagePreProcessor imagePreProcessor;
 
     public SamConfig(String modelFile, SamPreProcessorConfig preProcessorConfig,
             SamPostProcessorConfig postProcessorConfig) {
         this.modelFile = modelFile;
         this.preProcessorConfig = preProcessorConfig;
         this.postProcessorConfig = postProcessorConfig;
+        this.imagePreProcessor = selectedImagePreProcessor(preProcessorConfig);
+    }
+
+    public ImagePreProcessor selectedImagePreProcessor(
+            SamPreProcessorConfig config) {
+        switch (config.getImageProcessorType()) {
+        case "SamImagePreProcessor":
+            return new SamImagePreProcessor(preProcessorConfig);
+        default:
+            throw new RuntimeException(
+                    "Unknown image pre processor provided which cannot be instantiated.");
+        }
     }
 
     /**
@@ -29,14 +43,17 @@ public class SamConfig {
      * @return Object of SamConfig.
      */
     public static SamConfig fromFiles(String modelFile, Path configFolder) {
-        if(configFolder == null) {
+        if (configFolder == null) {
             throw new RuntimeException("Configuration folder cannot be null.");
+        }
+        if (Files.notExists(configFolder)) {
+            throw new RuntimeException("Configuration folder does not exist.");
         }
         Path preProcessorConfigPath =
                 configFolder.resolve(PRE_PROCESSOR_CONFIG_FILENAME);
-        SamPreProcessorConfig preProcessorConfig =
-                SamPreProcessorConfig.fromFile(preProcessorConfigPath.toFile());
-        return new SamConfig(modelFile, preProcessorConfig, null);
+        return new SamConfig(modelFile,
+                SamPreProcessorConfig.fromFile(preProcessorConfigPath.toFile()),
+                null);
     }
 
     public String getModelFile() {
@@ -49,5 +66,19 @@ public class SamConfig {
 
     public SamPostProcessorConfig getPostProcessorConfig() {
         return postProcessorConfig;
+    }
+
+    /**
+     * @return the imagePreProcessor
+     */
+    public ImagePreProcessor getImagePreProcessor() {
+        return imagePreProcessor;
+    }
+
+    /**
+     * @param imagePreProcessor the imagePreProcessor to set
+     */
+    public void setImagePreProcessor(ImagePreProcessor imagePreProcessor) {
+        this.imagePreProcessor = imagePreProcessor;
     }
 }

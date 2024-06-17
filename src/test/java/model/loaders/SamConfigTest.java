@@ -1,13 +1,13 @@
 package model.loaders;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
-
-import model.loaders.SamConfig;
-import model.loaders.SamPreProcessorConfig;
 
 public class SamConfigTest {
     @Test
@@ -23,26 +23,25 @@ public class SamConfigTest {
     @Test
     void testNullConvenienceCreation() throws Exception {
         assertThrows(RuntimeException.class, () -> {
-            SamConfig config = SamConfig.fromFiles(null, null);
+            SamConfig.fromFiles(null, null);
         });
     }
 
     @Test
     void testConvenienceCreationNonexitentPath() throws Exception {
         assertThrows(RuntimeException.class, () -> {
-            SamConfig config = SamConfig.fromFiles(null, Path.of(""));
+            SamConfig.fromFiles(null, Path.of(""));
         });
-//        assertNotNull(config);
-//
-//        assertNull(config.getModelFile());
-//        assertNull(config.getPreProcessorConfig());
-//        assertNull(config.getPostProcessorConfig());
     }
-    
+
     @Test
     void testConvenienceSuccessCreation() throws Exception {
-        SamConfig config = SamConfig.fromFiles(null, Path.of("/home/serverpc/Project/Checkout/sam-vit-base"));
-        SamPreProcessorConfig preProcessorConfig = config.getPreProcessorConfig();
-        assertEquals("", preProcessorConfig.getImageProcessorType());
+        Path samConfigFolder = Path.of("src/test/resources/sam-vit-base");
+        SamConfig config = SamConfig.fromFiles(null, samConfigFolder);
+        SamPreProcessorConfig preProcessorConfig =
+                config.getPreProcessorConfig();
+        assertEquals("SamImageProcessor", preProcessorConfig.getImageProcessorType());
+        ImagePreProcessor imagePreProcessor = config.getImagePreProcessor();
+        assertEquals(SamImagePreProcessor.class.getName(), imagePreProcessor.getClass().getName());
     }
 }
