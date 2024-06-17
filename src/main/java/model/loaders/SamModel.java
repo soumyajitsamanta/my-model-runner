@@ -9,11 +9,12 @@ public class SamModel {
 
     private final SamConfig config;
     private ImageProcessor imageProcessor;
-//    private OrtEnvironment env;
+    private OrtEnvironment env;
 //    private OrtSession session;
 
     public SamModel(SamConfig config) {
         this.config = config;
+        this.env = createEnvironment();
     }
 
     public OrtEnvironment createEnvironment() {
