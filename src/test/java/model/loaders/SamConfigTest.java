@@ -41,7 +41,5 @@ public class SamConfigTest {
         SamPreProcessorConfig preProcessorConfig =
                 config.getPreProcessorConfig();
         assertEquals("SamImageProcessor", preProcessorConfig.getImageProcessorType());
-        ImagePreProcessor imagePreProcessor = config.getImagePreProcessor();
-        assertEquals(SamImagePreProcessor.class.getName(), imagePreProcessor.getClass().getName());
     }
 }

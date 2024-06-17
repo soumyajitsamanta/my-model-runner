@@ -11,25 +11,12 @@ public class SamConfig {
     private String modelFile;
     private SamPreProcessorConfig preProcessorConfig;
     private SamPostProcessorConfig postProcessorConfig;
-    private ImagePreProcessor imagePreProcessor;
 
     public SamConfig(String modelFile, SamPreProcessorConfig preProcessorConfig,
             SamPostProcessorConfig postProcessorConfig) {
         this.modelFile = modelFile;
         this.preProcessorConfig = preProcessorConfig;
         this.postProcessorConfig = postProcessorConfig;
-        this.imagePreProcessor = selectedImagePreProcessor(preProcessorConfig);
-    }
-
-    public ImagePreProcessor selectedImagePreProcessor(
-            SamPreProcessorConfig config) {
-        switch (config.getImageProcessorType()) {
-        case "SamImagePreProcessor":
-            return new SamImagePreProcessor(preProcessorConfig);
-        default:
-            throw new RuntimeException(
-                    "Unknown image pre processor provided which cannot be instantiated.");
-        }
     }
 
     /**
@@ -66,19 +53,5 @@ public class SamConfig {
 
     public SamPostProcessorConfig getPostProcessorConfig() {
         return postProcessorConfig;
-    }
-
-    /**
-     * @return the imagePreProcessor
-     */
-    public ImagePreProcessor getImagePreProcessor() {
-        return imagePreProcessor;
-    }
-
-    /**
-     * @param imagePreProcessor the imagePreProcessor to set
-     */
-    public void setImagePreProcessor(ImagePreProcessor imagePreProcessor) {
-        this.imagePreProcessor = imagePreProcessor;
     }
 }
