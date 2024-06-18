@@ -2,9 +2,4 @@ package model.loaders;
 
 public interface ImageProcessor {
 
-    /**
-     * @return the config
-     */
-    SamConfig getConfig();
-
-}
+    void preProcessImage(String filename);}

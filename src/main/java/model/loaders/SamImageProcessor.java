@@ -14,6 +14,7 @@ public class SamImageProcessor implements ImageProcessor {
         this.config = config;
     }
 
+    @Override
     public void preProcessImage(String filename) {
         SamPreProcessorConfig preProcessorConfig = config.getPreProcessorConfig();
         try {
@@ -46,10 +47,5 @@ public class SamImageProcessor implements ImageProcessor {
             throw new RuntimeException(
                     "Could not open image for pre processing.", e);
         }
-    }
-
-    @Override
-    public SamConfig getConfig() {
-        return config;
     }
 }
