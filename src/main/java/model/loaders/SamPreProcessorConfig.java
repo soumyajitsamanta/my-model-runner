@@ -83,8 +83,7 @@ public class SamPreProcessorConfig {
      *
      */
     @JsonProperty("pad_size")
-    private Map<String, Integer> padSize =
-            Map.of("height", 1024, "width", 1024);
+    private ImageSize padSize = new ImageSize(1024, 1024);
     /**
      *
      */
@@ -139,9 +138,6 @@ public class SamPreProcessorConfig {
         return imageStd;
     }
 
-    public Map<String, Integer> getPadSize() {
-        return padSize;
-    }
 
     public String getProcessorClass() {
         return processorClass;
@@ -222,9 +218,6 @@ public class SamPreProcessorConfig {
         this.imageStd = imageStd;
     }
 
-    public void setPadSize(Map<String, Integer> padSize) {
-        this.padSize = padSize;
-    }
 
     public void setProcessorClass(String processorClass) {
         this.processorClass = processorClass;
