@@ -10,7 +10,6 @@ public class SamModel {
     private final SamConfig config;
     private ImageProcessor imageProcessor;
     private OrtEnvironment env;
-//    private OrtSession session;
 
     public SamModel(SamConfig config) {
         this.config = config;
@@ -38,8 +37,8 @@ public class SamModel {
 
     public ImageProcessor selectImageProcessorFromConfig(SamConfig config) {
         switch (config.getPreProcessorConfig().getImageProcessorType()) {
-        case SamImageProcessor.PROCESSOR_TYPE:
-            return new SamImageProcessor(config);
+        case SamImageProcessorVarbatim.PROCESSOR_TYPE:
+            return new SamImageProcessorVarbatim(config);
         default:
             throw new RuntimeException(
                     "Unknown image pre processor provided which cannot be instantiated from config.");

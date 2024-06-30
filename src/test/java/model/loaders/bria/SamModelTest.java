@@ -1,10 +1,15 @@
-package model.loaders;
+package model.loaders.bria;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
+
+import model.loaders.ImageProcessor;
+import model.loaders.SamConfig;
+import model.loaders.SamModel;
 
 public class SamModelTest {
     @Test

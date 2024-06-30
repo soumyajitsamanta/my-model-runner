@@ -1,4 +1,4 @@
-package model.loaders;
+package model.loaders.bria;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -8,6 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
+
+import model.loaders.SamConfig;
+import model.loaders.SamPreProcessorConfig;
 
 public class SamConfigTest {
     @Test

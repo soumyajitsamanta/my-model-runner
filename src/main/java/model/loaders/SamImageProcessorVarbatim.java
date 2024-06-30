@@ -1,62 +1,70 @@
 package model.loaders;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.util.List;
 import java.util.stream.Stream;
 
-import javax.imageio.ImageIO;
+import boofcv.struct.image.GrayF32;
+import boofcv.struct.image.Planar;
 
 public class SamImageProcessorVarbatim extends ImageProcessor {
-    public static final String PROCESSOR_TYPE = "SamImageProcessorVerbatim";
+    public static final String PROCESSOR_TYPE = "SamImageProcessor";
 
     private final SamConfig config;
 
-    public SamImageProcessorVarbatim(SamConfig config) {
+    public SamImageProcessorVarbatim(final SamConfig config) {
         this.config = config;
     }
 
     @Override
-    public void preProcessImage(String filename) {
-        SamPreProcessorConfig preProcessorConfig = config.getPreProcessorConfig();
-        Stream.of(readImage(filename))
+    public List<Planar<GrayF32>> preProcessImage(final BufferedImage originalImage) {
+        final SamPreProcessorConfig preProcessorConfig = config.getPreProcessorConfig();
+        return Stream.<BufferedImage>of(originalImage)
         .map(image -> {
-            if (!preProcessorConfig.isDoResize()) {
-                return image;
+            if (preProcessorConfig.isDoResize()) {
+                BufferedImage image2 = resizeIfSmall(image,
+                        preProcessorConfig.getSize().getLongestEdge());
+                return image2;
             }
-            return resize(image, preProcessorConfig.getSize().get("longest_edge"));
+            return image;
         })
-        .map(image->toImageArray(image))
-//        .map(image -> {
-//            if(!preProcessorConfig.isDoRescale()) {
-//                return image;
-//            }
-//            return rescale(image, preProcessorConfig.getRescaleFactor());
-//        })
-        ;
+        .flatMap(image -> batchImage(image, preProcessorConfig.getSize().getLongestEdge()))
+        .map(image -> toBoofImage(image))
+        .map(image -> {
+            if (preProcessorConfig.isDoRescale()) {
+            final Planar<GrayF32> newImage = image.createSameShape();
+            final float rescaleFactor = preProcessorConfig.getRescaleFactor();
+            final float[] mean = preProcessorConfig.getImageMean();
+            final float[] std = preProcessorConfig.getImageStd();
+            final int numBands = image.getNumBands();
+            for (int i = 0; i < numBands; i++) {
+                final int index = i;
+                image.getBand(index).forEachPixel((x, y, value) -> {
+                    final float rescaled = value * rescaleFactor;
+                    final float normalized =
+                            (rescaled - mean[index]) / std[index];
+                    System.err.println(List.of(x, y, value, rescaled,
+                            normalized, mean[index], std[index]));
+                    newImage.getBand(index).set(x, y, normalized);
+                });
+            }
+            return newImage;
+            }
+            return image;
+        })
+        .map(image -> {
+            if (preProcessorConfig.isDoPad()) {
+                return ImageTransforms.padImage(image,
+                        preProcessorConfig.getPadSize());
+            }
+
+            return image;
+        })
+        .toList();
     }
 
-    private Object toImageArray(BufferedImage image) {
-        image.getData();
-        return null;
-    }
+    
 
-    private ImageSize _get_preprocess_shape(ImageSize size, int longestEdge) {
-        return _get_preprocess_shape(size.height, size.width, longestEdge);
-    }
-
-    protected ImageSize _get_preprocess_shape(int height, int width,
-            int longestEdge) {
-        float scale = longestEdge / Math.max(height, width);
-        float newh = height * scale, neww = width * scale;
-        return new ImageSize((int) Math.floor(newh + 0.5f),
-                (int) Math.floor(neww + 0.5f));
-    }
-
-    public BufferedImage resize(BufferedImage image, Integer longestEdge) {
-        ImageSize shape = _get_preprocess_shape(ImageUtils.getImageSize(image),
-                longestEdge);
-        return ImageTransforms.resize(image, shape);
-    }
     
 
 }

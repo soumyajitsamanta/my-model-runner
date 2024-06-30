@@ -1,16 +1,22 @@
-package model.loaders;
+package model.loaders.bria;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
+
+import boofcv.struct.image.GrayF32;
+import boofcv.struct.image.Planar;
+import model.loaders.ImageProcessor;
 
 public class ImageProcessorTest {
 
     ImageProcessor op = new ImageProcessor() {
         @Override
-        public void preProcessImage(String filename) {
+        public List<Planar<GrayF32>> preProcessImage(BufferedImage image) {
+            return null;
         }
     };
 
