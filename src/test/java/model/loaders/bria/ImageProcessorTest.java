@@ -15,7 +15,13 @@ public class ImageProcessorTest {
 
     ImageProcessor op = new ImageProcessor() {
         @Override
-        public List<Planar<GrayF32>> preProcessImage(BufferedImage image) {
+        public List<float[][][]> preProcessImage(BufferedImage image) {
+            return null;
+        }
+
+        @Override
+        public List<Planar<GrayF32>> postProcessImage(BufferedImage image) {
+            // TODO Auto-generated method stub
             return null;
         }
     };

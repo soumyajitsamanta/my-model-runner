@@ -19,10 +19,11 @@ import boofcv.struct.image.Planar;
 public abstract class ImageProcessor {
     public static final String PROCESSOR_TYPE = "UnconfiguredImageProcessor";
 
-    public List<Planar<GrayF32>> preProcessImage(String filename){
+    public List<float[][][]> preProcessImage(String filename){
         return preProcessImage(readImage(filename));
     }
-    public abstract List<Planar<GrayF32>> preProcessImage(BufferedImage image);
+    public abstract List<float[][][]> preProcessImage(BufferedImage image);
+    public abstract List<Planar<GrayF32>> postProcessImage(BufferedImage image);
 
     public BufferedImage[] breakImageIntoTiles(BufferedImage image,
             int maxWidthSize, int maxHeightSize) {

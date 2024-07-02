@@ -25,20 +25,23 @@ public class ModelConfig {
     @JsonProperty("transformers_version")
     String transformersVersion;
 
+    String modelPath;
+
     public ModelConfig() {
     }
     @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
+    public boolean equals(Object obj) {
+        if (this == obj)
             return true;
-        }
-        if ((obj == null) || (getClass() != obj.getClass())) {
+        if (obj == null)
             return false;
-        }
-        final ModelConfig other = (ModelConfig) obj;
+        if (getClass() != obj.getClass())
+            return false;
+        ModelConfig other = (ModelConfig) obj;
         return Objects.equals(architectures, other.architectures)
                 && Objects.equals(autoMap, other.autoMap)
                 && inChannels == other.inChannels
+                && Objects.equals(modelPath, other.modelPath)
                 && Objects.equals(modelType, other.modelType)
                 && Objects.equals(nameOrPath, other.nameOrPath)
                 && outChannels == other.outChannels
@@ -51,10 +54,13 @@ public class ModelConfig {
     public AutoProperties getAutoMap() {
         return autoMap;
     }
-
     public int getInChannels() {
         return inChannels;
     }
+    public String getModelPath() {
+        return modelPath;
+    }
+
     public String getModelType() {
         return modelType;
     }
@@ -72,8 +78,9 @@ public class ModelConfig {
     }
     @Override
     public int hashCode() {
-        return Objects.hash(architectures, autoMap, inChannels, modelType,
-                nameOrPath, outChannels, torchDtype, transformersVersion);
+        return Objects.hash(architectures, autoMap, inChannels, modelPath,
+                modelType, nameOrPath, outChannels, torchDtype,
+                transformersVersion);
     }
     public void setArchitectures(final List<String> architectures) {
         this.architectures = architectures;
@@ -83,6 +90,9 @@ public class ModelConfig {
     }
     public void setInChannels(final int inChannels) {
         this.inChannels = inChannels;
+    }
+    public void setModelPath(String modelPath) {
+        this.modelPath = modelPath;
     }
     public void setModelType(final String modelType) {
         this.modelType = modelType;
@@ -102,7 +112,7 @@ public class ModelConfig {
     }
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
         builder.append("ModelConfig [nameOrPath=");
         builder.append(nameOrPath);
         builder.append(", architectures=");
@@ -119,6 +129,8 @@ public class ModelConfig {
         builder.append(torchDtype);
         builder.append(", transformersVersion=");
         builder.append(transformersVersion);
+        builder.append(", modelPath=");
+        builder.append(modelPath);
         builder.append("]");
         return builder.toString();
     }

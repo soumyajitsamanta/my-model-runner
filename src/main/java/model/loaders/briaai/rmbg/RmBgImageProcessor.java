@@ -18,10 +18,10 @@ public class RmBgImageProcessor extends ImageProcessor {
     }
 
     @Override
-    public List<Planar<GrayF32>> preProcessImage(BufferedImage image) {
+    public List<float[][][]> preProcessImage(BufferedImage image) {
         return preProcessImage(image, new ImageSize(config.getPreProcessorConfig().getSize().getWidth(), config.getPreProcessorConfig().getSize().getHeight()));
     }
-    public List<Planar<GrayF32>> preProcessImage(BufferedImage image, ImageSize size) {
+    public List<float[][][]> preProcessImage(BufferedImage image, ImageSize size) {
         RmBgPreProcessorConfig preProcessorConfig = config.getPreProcessorConfig();
         preProcessorConfig.valiadte();
         return Stream.of(image)
@@ -63,6 +63,25 @@ public class RmBgImageProcessor extends ImageProcessor {
             }
             return resultIm;
         })
+        .map(im -> {
+            int numBands = im.getNumBands();
+            float[][][] chw=new float[numBands][][];
+            for(int i=0;i<numBands;i++) {
+                chw[i] = new float[1024][];
+                for(int j=0;j<1024;j++) {
+                    chw[i][j] = new float[1024];
+                }
+            }
+            for(int i=0;i<numBands;i++) {
+                int index = i;
+                
+                GrayF32 band = im.getBand(i);
+                band.forEachPixel((x,y,v)->{
+                    chw[index][y][x]=v;
+                });
+            }
+            return chw;
+        })
         .toList()
         ;
     }
@@ -72,6 +91,11 @@ public class RmBgImageProcessor extends ImageProcessor {
             return im.createSameShape();
         }
         return im.createNew(size.getWidth(), size.getHeight());
+    }
+
+    @Override
+    public List<Planar<GrayF32>> postProcessImage(BufferedImage image) {
+        return null;
     }
 
 }
