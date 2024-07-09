@@ -23,8 +23,8 @@ public class RmBgConfig {
         return rmBgConfig;
     }
 
+    private String modelPath;
     private RmBgModelConfig model;
-
     private RmBgPreProcessorConfig preProcessorConfig;
 
     public RmBgPreProcessorConfig getPreProcessorConfig() {
@@ -48,5 +48,19 @@ public class RmBgConfig {
      */
     public void setModel(RmBgModelConfig model) {
         this.model = model;
+    }
+
+    /**
+     * @return the modelPath
+     */
+    public String getModelPath() {
+        return modelPath;
+    }
+
+    /**
+     * @param modelPath the modelPath to set
+     */
+    public void setModelPath(String modelPath) {
+        this.modelPath = modelPath;
     }
 }

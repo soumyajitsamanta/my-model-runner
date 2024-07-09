@@ -2,8 +2,10 @@ package model.loaders.briaai.rmbg;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import boofcv.io.image.ConvertBufferedImage;
 import boofcv.struct.image.GrayF32;
 import boofcv.struct.image.Planar;
 import model.loaders.ImageProcessor;
@@ -94,8 +96,33 @@ public class RmBgImageProcessor extends ImageProcessor {
     }
 
     @Override
-    public List<Planar<GrayF32>> postProcessImage(BufferedImage image) {
-        return null;
+    public List<BufferedImage> postProcessImage(final float[][][][] output) {
+        int numOfBatches = output.length;
+        return IntStream.range(0, numOfBatches)
+        .mapToObj(batch -> {
+            float[][] resultMas = output[batch][0];
+            float min = Float.POSITIVE_INFINITY;
+            float max = Float.NEGATIVE_INFINITY;
+            GrayF32 maybeMask = new GrayF32(resultMas.length, resultMas.length);
+            for(int i=0;i<resultMas.length;i++) {
+                for(int j=0;j<resultMas[i].length;j++) {
+                    float v = resultMas[j][i];
+                    if(min>v) {
+                        min=v;
+                    }
+                    if(max<v) {
+                        max=v;
+                    }
+                    maybeMask.set(i, j, v);
+                }
+            }
+            float[] data = maybeMask.getData();
+            for(int i=0;i<data.length;i++) {
+                data[i] = (data[i]-min)/(max-min)*255;
+            }
+            return ConvertBufferedImage.convertTo(maybeMask, null);
+        })
+        .toList();
     }
 
 }

@@ -23,7 +23,6 @@ public abstract class ImageProcessor {
         return preProcessImage(readImage(filename));
     }
     public abstract List<float[][][]> preProcessImage(BufferedImage image);
-    public abstract List<Planar<GrayF32>> postProcessImage(BufferedImage image);
 
     public BufferedImage[] breakImageIntoTiles(BufferedImage image,
             int maxWidthSize, int maxHeightSize) {
@@ -93,5 +92,6 @@ public abstract class ImageProcessor {
         }
         return Stream.of(resized);
     }
+    public abstract List<BufferedImage> postProcessImage(float[][][][] output);
 
 }
