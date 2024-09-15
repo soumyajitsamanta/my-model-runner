@@ -20,7 +20,7 @@ public class ImageProcessorTest {
         }
 
         @Override
-        public List<Planar<GrayF32>> postProcessImage(BufferedImage image) {
+        public List<BufferedImage> postProcessImage(float[][][][] output) {
             // TODO Auto-generated method stub
             return null;
         }
